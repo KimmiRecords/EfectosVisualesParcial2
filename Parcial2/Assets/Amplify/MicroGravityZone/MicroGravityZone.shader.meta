@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f0f1490a30baeca4c8efb84427a00e67
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _Tex_Fx__Horizontal_111: {fileID: 2800000, guid: abaf76e832f6c744d8e610c661b33c5e, type: 3}
+  - _Flowmap: {fileID: 2800000, guid: f5540f8d47e5e174596579802a144de1, type: 3}
+  - _Tex_Fx__Electric_3: {fileID: 2800000, guid: a47c10ae956e8b9438f1739d15b7b55c, type: 3}
+  - _Tex_Fx__Electric_02: {fileID: 2800000, guid: a47c10ae956e8b9438f1739d15b7b55c, type: 3}
+  - _Tex_Fx_Turbulence_043_c: {fileID: 2800000, guid: e8f3ef115095458489f7aed93f543497, type: 3}
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
