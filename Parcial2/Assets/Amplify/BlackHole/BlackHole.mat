@@ -44,5 +44,5 @@ Material:
     m_Colors:
     - _Color0: {r: 1, g: 0.9198113, b: 0.9684062, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _HorizonColor: {r: 1, g: 0.29396662, b: 0, a: 1}
+    - _HorizonColor: {r: 0.007843134, g: 0.034565225, b: 0.14901961, a: 1}
   m_BuildTextureStacks: []
