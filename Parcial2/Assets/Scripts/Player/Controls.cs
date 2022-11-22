@@ -48,20 +48,20 @@ public class Controls
             isJump = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            _playerMovement.StartSpeedBoost();
-        }
+        //if (Input.GetKeyDown(KeyCode.T))
+        //{
+        //    _playerMovement.StartSpeedBoost();
+        //}
 
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            _playerMovement.playerCamera.GetComponent<Inventory>().InventoryOpen();
-        }
+        //if (Input.GetKeyDown(KeyCode.I))
+        //{
+        //    _playerMovement.playerCamera.GetComponent<Inventory>().InventoryOpen();
+        //}
 
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            _playerMovement.lounchGranada.Launch();
-        }
+        //if (Input.GetKeyDown(KeyCode.G))
+        //{
+        //    _playerMovement.lounchGranada.Launch();
+        //}
 
 
 
@@ -76,38 +76,38 @@ public class Controls
 
         //CHEATS
 
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            PlayerStats.instance.UsbsCollected++;
-            CanvasManager.instance.TurnOnCanvas("CanvasUSB");
-            Debug.Log("CHEAT: te sumaste un usb. Ahora tenes " + PlayerStats.instance.UsbsCollected);
-        }
+        //if (Input.GetKeyDown(KeyCode.U))
+        //{
+        //    PlayerStats.instance.UsbsCollected++;
+        //    CanvasManager.instance.TurnOnCanvas("CanvasUSB");
+        //    Debug.Log("CHEAT: te sumaste un usb. Ahora tenes " + PlayerStats.instance.UsbsCollected);
+        //}
 
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            PlayerStats.instance.GetCardKey();
-            Debug.Log("CHEAT: conseguiste la cardkey");
-        }
+        //if (Input.GetKeyDown(KeyCode.K))
+        //{
+        //    PlayerStats.instance.GetCardKey();
+        //    Debug.Log("CHEAT: conseguiste la cardkey");
+        //}
 
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            PlayerStats.instance.GetFlashlight();
-            Debug.Log("CHEAT: conseguiste la linterna");
-        }
+        //if (Input.GetKeyDown(KeyCode.L))
+        //{
+        //    PlayerStats.instance.GetFlashlight();
+        //    Debug.Log("CHEAT: conseguiste la linterna");
+        //}
 
-        if (Input.GetKeyDown(KeyCode.Numlock))
-        {
-            PlayerStats.instance.SpeedBoosts++;
-            CanvasManager.instance.TurnOnCanvas("CanvasJeringas");
+        //if (Input.GetKeyDown(KeyCode.Numlock))
+        //{
+        //    PlayerStats.instance.SpeedBoosts++;
+        //    CanvasManager.instance.TurnOnCanvas("CanvasJeringas");
 
-            Debug.Log("CHEAT: conseguiste 1 speedboost");
-        }
+        //    Debug.Log("CHEAT: conseguiste 1 speedboost");
+        //}
 
-        if (Input.GetKeyDown(KeyCode.Semicolon))
-        {
-            PlayerStats.instance.Grenades++;
-            CanvasManager.instance.TurnOnCanvas("CanvasGranadas");
-            Debug.Log("CHEAT: conseguiste 1 granada");
-        }
+        //if (Input.GetKeyDown(KeyCode.Semicolon))
+        //{
+        //    PlayerStats.instance.Grenades++;
+        //    CanvasManager.instance.TurnOnCanvas("CanvasGranadas");
+        //    Debug.Log("CHEAT: conseguiste 1 granada");
+        //}
     }
 }
