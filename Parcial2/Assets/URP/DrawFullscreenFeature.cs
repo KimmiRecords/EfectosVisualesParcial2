@@ -25,6 +25,9 @@ namespace UnityEngine.Rendering.Universal
         public Settings settings = new Settings();
         DrawFullscreenPass blitPass;
 
+        //public ScriptableObject nave;
+
+
         public override void Create()
         {
             blitPass = new DrawFullscreenPass(name);
@@ -45,6 +48,13 @@ namespace UnityEngine.Rendering.Universal
             renderer.EnqueuePass(blitPass);
            
         }
+
+        //public void AAA()
+        //{
+
+        //    var shaderIntensity = settings.blitMaterial.shader.FindPropertyIndex("_Intensity");
+        //    shaderIntensity = 1;
+        //}
     }
 }
 

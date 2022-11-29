@@ -14,15 +14,15 @@ public abstract class Interactable : MonoBehaviour
 
     public EnumPickUpType pickUpType = EnumPickUpType.item_usb; //esto solo determina cual aparece x default en inspector. hay que ir a setearlo igual.
     public bool muestraManito = true;
-    public Inventory inventory;
+    //public Inventory inventory;
 
-    private void Start()
-    {
-        if (inventory == null)
-        {
-            inventory = FindObjectOfType<Inventory>();
-        }
-    }
+    //private void Start()
+    //{
+    //    if (inventory == null)
+    //    {
+    //        inventory = FindObjectOfType<Inventory>();
+    //    }
+    //}
     public virtual void Interact() //la base. todos los pickups hacen esto cuando los interactuas con E.
     {
         if (this.pickUpType != EnumPickUpType.solo_infoPopup) //si no es solo informativo, hace ruidito

@@ -91,7 +91,6 @@ namespace UnityEngine.Rendering.Universal
             {
                 Blit(cmd, source, destination, settings.blitMaterial, settings.blitMaterialPassIndex);
             }
-
             
             context.ExecuteCommandBuffer(cmd);
             
@@ -107,5 +106,6 @@ namespace UnityEngine.Rendering.Universal
             if (source == destination && sourceId != -1)
                 cmd.ReleaseTemporaryRT(sourceId);
         }
+
     }
 }

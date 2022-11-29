@@ -94,7 +94,7 @@ public class PlayerMovement : MonoBehaviour, IRalentizable, IMicroGravity, ITran
         if (groundedPlayer && _verticalVelocity <= 0) //corta la caida cuando toco el suelo
         {
             _verticalVelocity = 0f;
-            AudioManager.instance.PlayJumpDown();
+            //AudioManager.instance.PlayJumpDown();
         }
 
         _verticalVelocity -= gravityValue * Time.deltaTime; //aplica gravedad extra
@@ -109,8 +109,8 @@ public class PlayerMovement : MonoBehaviour, IRalentizable, IMicroGravity, ITran
         {
             if (_groundedTimer > 0)
             {
-                AudioManager.instance.StopPasos();
-                AudioManager.instance.PlayJumpUp();
+                //AudioManager.instance.StopPasos();
+                //AudioManager.instance.PlayJumpUp();
                 _groundedTimer = 0;
                 _verticalVelocity += Mathf.Sqrt(jumpHeight * 2 * gravityValue); //saltar en realidad le da velocidad vertical nomas
                 pAnims.PlayJumping();
@@ -140,7 +140,7 @@ public class PlayerMovement : MonoBehaviour, IRalentizable, IMicroGravity, ITran
     }
     void TPToCheckpoint(Vector3 cp)
     {
-        AudioManager.instance.PlayTPToCheckpoint();
+        //AudioManager.instance.PlayTPToCheckpoint();
         controller.enabled = false; //apago el character controller antes de moverlo
         transform.position = cp;
         controller.enabled = true;
@@ -158,7 +158,7 @@ public class PlayerMovement : MonoBehaviour, IRalentizable, IMicroGravity, ITran
             _speedModifier = 0.5f;
             jumpHeight *= jumpHeightOnSlowMultiplier;
         }
-        AudioManager.instance.TriggerSound(AudioManager.instance.sound["GeigerCounter"], 2, 0, 1, true);
+        //AudioManager.instance.TriggerSound(AudioManager.instance.sound["GeigerCounter"], 2, 0, 1, true);
     }
     public void ExitSlow()
     {
@@ -167,7 +167,7 @@ public class PlayerMovement : MonoBehaviour, IRalentizable, IMicroGravity, ITran
             _speedModifier = 1;
             jumpHeight *= (1 / jumpHeightOnSlowMultiplier);
         }
-        AudioManager.instance.TriggerSound(AudioManager.instance.sound["GeigerCounter"], 2, 0, 1, false);
+        //AudioManager.instance.TriggerSound(AudioManager.instance.sound["GeigerCounter"], 2, 0, 1, false);
     }
 
     public void EnterMicroGravity()
@@ -175,7 +175,7 @@ public class PlayerMovement : MonoBehaviour, IRalentizable, IMicroGravity, ITran
         gravityValue = gravityValueOnMicroGravity;
         jumpHeight *= jumpHeightOnMicroGravityMultiplier;
         _speedModifier = speedModifierOnMicroGravity;
-        AudioManager.instance.TriggerSound(AudioManager.instance.sound["MicroGravityOn"], 0.5f, 0, 1, true);
+        //AudioManager.instance.TriggerSound(AudioManager.instance.sound["MicroGravityOn"], 0.5f, 0, 1, true);
     }
 
     public void ExitMicroGravity()
@@ -183,7 +183,7 @@ public class PlayerMovement : MonoBehaviour, IRalentizable, IMicroGravity, ITran
         gravityValue = initialGravityValue;
         jumpHeight *= (1 / jumpHeightOnMicroGravityMultiplier);
         _speedModifier = 1;
-        AudioManager.instance.TriggerSound(AudioManager.instance.sound["MicroGravityOff"], 0.5f, 0, 1, true);
+        //AudioManager.instance.TriggerSound(AudioManager.instance.sound["MicroGravityOff"], 0.5f, 0, 1, true);
     }
 
     public void StartSpeedBoost()
@@ -215,7 +215,7 @@ public class PlayerMovement : MonoBehaviour, IRalentizable, IMicroGravity, ITran
 
         jumpHeight *= boostJumpMultiplier;
         _boostOn = true;
-        AudioManager.instance.PlayBoostOn();
+        //AudioManager.instance.PlayBoostOn();
 
         while (_timer < cameraFOVChangeDuration)
         {

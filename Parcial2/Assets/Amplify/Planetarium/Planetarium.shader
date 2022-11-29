@@ -857,7 +857,7 @@ Shader "Planetarium"
 }
 /*ASEBEGIN
 Version=18935
-433;669;1567;690;1824.349;722.1984;1;True;False
+8;81;1995;270;2070.349;736.6984;1;True;False
 Node;AmplifyShaderEditor.RotatorNode;45;-897.079,-645.2182;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0.5,0.5;False;2;FLOAT;1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;46;-1170.457,-674.9055;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;41;-567.5466,-652.0843;Inherit;True;Property;_TextureSample1;Texture Sample 1;0;0;Create;True;0;0;0;False;0;False;-1;None;a199da0432efa6a489df8883d1f3bfe0;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -874,4 +874,4 @@ WireConnection;41;1;45;0
 WireConnection;32;0;50;0
 WireConnection;27;2;41;0
 ASEEND*/
-//CHKSM=F74A78544253384F05C6D88D7FC0258AABAF93B1
+//CHKSM=32CCAB3434A9118A841AEAE3B3DD1F1E83817481

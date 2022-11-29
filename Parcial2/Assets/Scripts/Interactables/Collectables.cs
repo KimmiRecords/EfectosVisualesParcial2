@@ -13,6 +13,7 @@ public abstract class Collectables : Interactable
 
         GameObject itemPickedUp = this.gameObject; //que objeto agarre
         Items item = itemPickedUp.GetComponent<Items>(); //su componente item
-        inventory.AddItem(itemPickedUp, item.id, item.type, item.icon); //lo agrego. 
+        //inventory.AddItem(itemPickedUp, item.id, item.type, item.icon); //lo agrego. 
     }
 }
+
