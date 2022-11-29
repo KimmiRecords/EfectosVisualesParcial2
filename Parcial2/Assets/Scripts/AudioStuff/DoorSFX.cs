@@ -11,11 +11,11 @@ public class DoorSFX : MonoBehaviour
 
     public void PlayDoorOpen()
     {
-        AudioManager.instance.PlayDoorOpen(transform.position);
+        //AudioManager.instance.PlayDoorOpen(transform.position);
     }
 
     public void PlayDoorClose()
     {
-        AudioManager.instance.PlayDoorClose(transform.position);
+        //AudioManager.instance.PlayDoorClose(transform.position);
     }
 }
