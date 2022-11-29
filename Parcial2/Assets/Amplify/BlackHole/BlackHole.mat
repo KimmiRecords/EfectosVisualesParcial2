@@ -25,13 +25,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaCutoff: 0.5
-    - _DistortionStrength: 4.26
+    - _DistortionStrength: 4.3
     - _Float0: 0
     - _HoleSize: 0.695
     - _HorizonBias: 0.00148
     - _HorizonColorScale: 0.155
     - _HorizonPower: 5
-    - _HorizonSmoothness: 0.0417
+    - _HorizonSmoothness: 0.0147
     - _Metallic: 1
     - _RedAmount: 0
     - _Smoothness: -1
@@ -44,5 +44,5 @@ Material:
     m_Colors:
     - _Color0: {r: 1, g: 0.9198113, b: 0.9684062, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _HorizonColor: {r: 0.007843134, g: 0.034565225, b: 0.14901961, a: 1}
+    - _HorizonColor: {r: 0.016687429, g: 0.040958337, b: 0.14150941, a: 1}
   m_BuildTextureStacks: []
