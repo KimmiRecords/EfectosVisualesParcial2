@@ -47,6 +47,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: f5540f8d47e5e174596579802a144de1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Flowmap1:
+        m_Texture: {fileID: 2800000, guid: f5540f8d47e5e174596579802a144de1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -68,7 +72,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureSample0:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f5540f8d47e5e174596579802a144de1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _arcoirisfondonegro:
+        m_Texture: {fileID: 2800000, guid: 2616fbfcaf5f3d64bad3520f5ad2eca7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -95,17 +103,22 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _ColorIntensity: 0
+    - _ColorIntensity: 0.2
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _DistorsionArcoiris: 2.7
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+    - _Float0: 1.05
+    - _Float1: 0.117835745
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Intensity: 0.07
+    - _Intensity: 0.034
+    - _Intensity1: 0.158
+    - _Intensity2: 0.195
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -115,6 +128,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _Speed: 0.1
+    - _Speed1: 0.1
     - _SrcBlend: 1
     - _Surface: 0
     - _TessEdgeLength: 16
