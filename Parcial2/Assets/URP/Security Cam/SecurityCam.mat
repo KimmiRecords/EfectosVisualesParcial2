@@ -23,8 +23,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MainTex1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _TextureSample0:
-        m_Texture: {fileID: 2800000, guid: 80ab37a9e4f49c842903bb43bdd7bcd2, type: 3}
+        m_Texture: {fileID: 2800000, guid: f5540f8d47e5e174596579802a144de1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _arcoirisfondonegro:
+        m_Texture: {fileID: 2800000, guid: 2616fbfcaf5f3d64bad3520f5ad2eca7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _lineatxt:
@@ -41,16 +49,20 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaCutoff: 0.5
+    - _ComputerScreenAmount: 0.26651388
+    - _DistorsionArcoiris: 30
     - _Float0: 0.6
-    - _Intensity: 0
-    - _Pixelation: 0.25
-    - _Screennoise: 0.059903067
+    - _Intensity: 0.2
+    - _Intensity2: 0.2
+    - _Pixelation: 0
+    - _Screennoise: 0.3
     - _Speed: 0.5
+    - _TODO: 0
     m_Colors:
     - _Color0: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _Pixels: {r: 75, g: 75, b: 0, a: 0}
     - _ScreenColor: {r: 0, g: 0.31132078, b: 0.09474978, a: 1}
-    - _ScreenSpeed: {r: 0.01, g: 0.05, b: 0, a: 0}
+    - _ScreenSpeed: {r: 0.05, g: 0.05, b: 0, a: 0}
     - _ScreenSpeed1: {r: 0, g: 0.1, b: 0, a: 0}
   m_BuildTextureStacks: []

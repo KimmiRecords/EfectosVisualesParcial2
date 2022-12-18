@@ -12,8 +12,8 @@ public class PPTrigger : MonoBehaviour
         if (other.gameObject.GetComponent<IMicroGravity>() != null)
         {
             underwater.SetFloat("_Intensity", 0.06f);
+            underwater.SetFloat("_Intensity2", 1f);
             underwater.SetFloat("_ColorIntensity", 0.2f);
-
         }
     }
 
@@ -22,8 +22,8 @@ public class PPTrigger : MonoBehaviour
         if (other.gameObject.GetComponent<IMicroGravity>() != null)
         {
             underwater.SetFloat("_Intensity", 0f);
+            underwater.SetFloat("_Intensity2", 0f);
             underwater.SetFloat("_ColorIntensity", 0f);
-
         }
     }
 }

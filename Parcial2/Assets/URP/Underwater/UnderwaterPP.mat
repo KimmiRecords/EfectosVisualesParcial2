@@ -103,12 +103,12 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _ColorIntensity: 0.2
+    - _ColorIntensity: 0
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DistorsionArcoiris: 2.7
+    - _DistorsionArcoiris: 1.5
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _Float0: 1.05
@@ -116,9 +116,9 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Intensity: 0.034
+    - _Intensity: 0
     - _Intensity1: 0.158
-    - _Intensity2: 0.195
+    - _Intensity2: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -145,7 +145,7 @@ Material:
     - _Color0: {r: 0.6650944, g: 0.7763021, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _WaterColor: {r: 0.2627451, g: 0.5176471, b: 0.7176471, a: 1}
+    - _WaterColor: {r: 0, g: 0.43112814, b: 0.7735849, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2325985641535020978
 MonoBehaviour:

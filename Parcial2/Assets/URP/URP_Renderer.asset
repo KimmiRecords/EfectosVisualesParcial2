@@ -56,7 +56,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79edad31d957ef348aaf6dc48812048f, type: 3}
   m_Name: SecCam
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   settings:
     renderPassEvent: 550
     blitMaterial: {fileID: 2100000, guid: 1f06b800e7e18604ba9557e64b63ba75, type: 2}
@@ -82,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    renderPassEvent: 500
+    renderPassEvent: 550
     blitMaterial: {fileID: 2100000, guid: 9919a0db93331a944812960cae7f58f0, type: 2}
     blitMaterialPassIndex: -1
     sourceType: 0
