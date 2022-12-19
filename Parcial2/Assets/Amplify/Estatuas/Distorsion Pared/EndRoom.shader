@@ -12,7 +12,9 @@ Shader "EndRoom"
 		_MaskTextura("MaskTextura", Vector) = (0,0,0,0)
 		_tech("tech", 2D) = "white" {}
 		_Tiling("Tiling", Vector) = (1,1,0,0)
-		[ASEEnd]_Speed("Speed", Vector) = (0,0.2,0,0)
+		_Speed("Speed", Vector) = (0,0.2,0,0)
+		_Float0("Float 0", Range( 0 , 0.2)) = 1
+		[ASEEnd]_Float1("Float 0", Range( 0 , 0.2)) = 1
 
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		//_TransStrength( "Trans Strength", Range( 0, 50 ) ) = 1
@@ -22,7 +24,7 @@ Shader "EndRoom"
 		//_TransAmbient( "Trans Ambient", Range( 0, 1 ) ) = 0.1
 		//_TransShadow( "Trans Shadow", Range( 0, 1 ) ) = 0.5
 		//_TessPhongStrength( "Tess Phong Strength", Range( 0, 1 ) ) = 0.5
-		//_TessValue( "Tess Max Tessellation", Range( 1, 32 ) ) = 16
+		_TessValue( "Max Tessellation", Range( 1, 32 ) ) = 16
 		//_TessMin( "Tess Min Distance", Float ) = 10
 		//_TessMax( "Tess Max Distance", Float ) = 25
 		//_TessEdgeLength ( "Tess Edge length", Range( 2, 50 ) ) = 16
@@ -170,6 +172,11 @@ Shader "EndRoom"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
+			#define TESSELLATION_ON 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _EMISSION
 			#define ASE_SRP_VERSION 100700
 
@@ -240,12 +247,14 @@ Shader "EndRoom"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorAlbedo;
 			float4 _ColorEmissive;
-			float2 _MaskTextura;
+			float4 _ColorAlbedo;
 			float2 _Tiling;
 			float2 _Speed;
+			float2 _MaskTextura;
 			float2 _MaskAlpha;
+			float _Float0;
+			float _Float1;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -277,6 +286,9 @@ Shader "EndRoom"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float2 texCoord11 = v.texcoord.xy * _Tiling + ( _Speed * _TimeParameters.x );
+				float4 temp_output_64_0 = ( _ColorEmissive * tex2Dlod( _tech, float4( texCoord11, 0, 0.0) ) );
+				
 				o.ase_texcoord7.xy = v.texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -286,7 +298,7 @@ Shader "EndRoom"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( ( temp_output_64_0 * _Float0 ) * _Float1 ).rgb;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -470,12 +482,13 @@ Shader "EndRoom"
 				float smoothstepResult72 = smoothstep( _MaskTextura.x , _MaskTextura.y , texCoord5.y);
 				
 				float2 texCoord11 = IN.ase_texcoord7.xy * _Tiling + ( _Speed * _TimeParameters.x );
+				float4 temp_output_64_0 = ( _ColorEmissive * tex2D( _tech, texCoord11 ) );
 				
 				float smoothstepResult70 = smoothstep( _MaskAlpha.x , _MaskAlpha.y , ( 1.0 - texCoord5.y ));
 				
 				float3 Albedo = ( _ColorAlbedo * smoothstepResult72 ).rgb;
 				float3 Normal = float3(0, 0, 1);
-				float3 Emission = ( ( _ColorEmissive * tex2D( _tech, texCoord11 ) ) * smoothstepResult72 ).rgb;
+				float3 Emission = ( temp_output_64_0 * smoothstepResult72 ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = 0;
 				float Smoothness = 0.5;
@@ -653,6 +666,11 @@ Shader "EndRoom"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
+			#define TESSELLATION_ON 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _EMISSION
 			#define ASE_SRP_VERSION 100700
 
@@ -694,12 +712,14 @@ Shader "EndRoom"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorAlbedo;
 			float4 _ColorEmissive;
-			float2 _MaskTextura;
+			float4 _ColorAlbedo;
 			float2 _Tiling;
 			float2 _Speed;
+			float2 _MaskTextura;
 			float2 _MaskAlpha;
+			float _Float0;
+			float _Float1;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -720,7 +740,8 @@ Shader "EndRoom"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			
+			sampler2D _tech;
+
 
 			
 			float3 _LightDirection;
@@ -734,6 +755,9 @@ Shader "EndRoom"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
+				float2 texCoord11 = v.ase_texcoord.xy * _Tiling + ( _Speed * _TimeParameters.x );
+				float4 temp_output_64_0 = ( _ColorEmissive * tex2Dlod( _tech, float4( texCoord11, 0, 0.0) ) );
+				
 				o.ase_texcoord2.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -743,7 +767,7 @@ Shader "EndRoom"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( ( temp_output_64_0 * _Float0 ) * _Float1 ).rgb;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -945,6 +969,11 @@ Shader "EndRoom"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
+			#define TESSELLATION_ON 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _EMISSION
 			#define ASE_SRP_VERSION 100700
 
@@ -984,12 +1013,14 @@ Shader "EndRoom"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorAlbedo;
 			float4 _ColorEmissive;
-			float2 _MaskTextura;
+			float4 _ColorAlbedo;
 			float2 _Tiling;
 			float2 _Speed;
+			float2 _MaskTextura;
 			float2 _MaskAlpha;
+			float _Float0;
+			float _Float1;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1010,7 +1041,8 @@ Shader "EndRoom"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			
+			sampler2D _tech;
+
 
 			
 			VertexOutput VertexFunction( VertexInput v  )
@@ -1020,6 +1052,9 @@ Shader "EndRoom"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float2 texCoord11 = v.ase_texcoord.xy * _Tiling + ( _Speed * _TimeParameters.x );
+				float4 temp_output_64_0 = ( _ColorEmissive * tex2Dlod( _tech, float4( texCoord11, 0, 0.0) ) );
+				
 				o.ase_texcoord2.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -1029,7 +1064,7 @@ Shader "EndRoom"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( ( temp_output_64_0 * _Float0 ) * _Float1 ).rgb;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1202,6 +1237,11 @@ Shader "EndRoom"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
+			#define TESSELLATION_ON 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _EMISSION
 			#define ASE_SRP_VERSION 100700
 
@@ -1245,12 +1285,14 @@ Shader "EndRoom"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorAlbedo;
 			float4 _ColorEmissive;
-			float2 _MaskTextura;
+			float4 _ColorAlbedo;
 			float2 _Tiling;
 			float2 _Speed;
+			float2 _MaskTextura;
 			float2 _MaskAlpha;
+			float _Float0;
+			float _Float1;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1282,6 +1324,9 @@ Shader "EndRoom"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float2 texCoord11 = v.ase_texcoord.xy * _Tiling + ( _Speed * _TimeParameters.x );
+				float4 temp_output_64_0 = ( _ColorEmissive * tex2Dlod( _tech, float4( texCoord11, 0, 0.0) ) );
+				
 				o.ase_texcoord2.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -1292,7 +1337,7 @@ Shader "EndRoom"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( ( temp_output_64_0 * _Float0 ) * _Float1 ).rgb;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1424,12 +1469,13 @@ Shader "EndRoom"
 				float smoothstepResult72 = smoothstep( _MaskTextura.x , _MaskTextura.y , texCoord5.y);
 				
 				float2 texCoord11 = IN.ase_texcoord2.xy * _Tiling + ( _Speed * _TimeParameters.x );
+				float4 temp_output_64_0 = ( _ColorEmissive * tex2D( _tech, texCoord11 ) );
 				
 				float smoothstepResult70 = smoothstep( _MaskAlpha.x , _MaskAlpha.y , ( 1.0 - texCoord5.y ));
 				
 				
 				float3 Albedo = ( _ColorAlbedo * smoothstepResult72 ).rgb;
-				float3 Emission = ( ( _ColorEmissive * tex2D( _tech, texCoord11 ) ) * smoothstepResult72 ).rgb;
+				float3 Emission = ( temp_output_64_0 * smoothstepResult72 ).rgb;
 				float Alpha = smoothstepResult70;
 				float AlphaClipThreshold = 0.5;
 
@@ -1466,6 +1512,11 @@ Shader "EndRoom"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
+			#define TESSELLATION_ON 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _EMISSION
 			#define ASE_SRP_VERSION 100700
 
@@ -1508,12 +1559,14 @@ Shader "EndRoom"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorAlbedo;
 			float4 _ColorEmissive;
-			float2 _MaskTextura;
+			float4 _ColorAlbedo;
 			float2 _Tiling;
 			float2 _Speed;
+			float2 _MaskTextura;
 			float2 _MaskAlpha;
+			float _Float0;
+			float _Float1;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1534,7 +1587,8 @@ Shader "EndRoom"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			
+			sampler2D _tech;
+
 
 			
 			VertexOutput VertexFunction( VertexInput v  )
@@ -1544,6 +1598,9 @@ Shader "EndRoom"
 				UNITY_TRANSFER_INSTANCE_ID( v, o );
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
+				float2 texCoord11 = v.ase_texcoord.xy * _Tiling + ( _Speed * _TimeParameters.x );
+				float4 temp_output_64_0 = ( _ColorEmissive * tex2Dlod( _tech, float4( texCoord11, 0, 0.0) ) );
+				
 				o.ase_texcoord2.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -1554,7 +1611,7 @@ Shader "EndRoom"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( ( temp_output_64_0 * _Float0 ) * _Float1 ).rgb;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1719,6 +1776,11 @@ Shader "EndRoom"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
+			#define TESSELLATION_ON 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _EMISSION
 			#define ASE_SRP_VERSION 100700
 
@@ -1759,12 +1821,14 @@ Shader "EndRoom"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorAlbedo;
 			float4 _ColorEmissive;
-			float2 _MaskTextura;
+			float4 _ColorAlbedo;
 			float2 _Tiling;
 			float2 _Speed;
+			float2 _MaskTextura;
 			float2 _MaskAlpha;
+			float _Float0;
+			float _Float1;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1785,7 +1849,8 @@ Shader "EndRoom"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			
+			sampler2D _tech;
+
 
 			
 			VertexOutput VertexFunction( VertexInput v  )
@@ -1795,6 +1860,9 @@ Shader "EndRoom"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float2 texCoord11 = v.ase_texcoord.xy * _Tiling + ( _Speed * _TimeParameters.x );
+				float4 temp_output_64_0 = ( _ColorEmissive * tex2Dlod( _tech, float4( texCoord11, 0, 0.0) ) );
+				
 				o.ase_texcoord3.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -1804,7 +1872,7 @@ Shader "EndRoom"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( ( temp_output_64_0 * _Float0 ) * _Float1 ).rgb;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1986,6 +2054,11 @@ Shader "EndRoom"
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
+			#define TESSELLATION_ON 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _EMISSION
 			#define ASE_SRP_VERSION 100700
 
@@ -2054,12 +2127,14 @@ Shader "EndRoom"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorAlbedo;
 			float4 _ColorEmissive;
-			float2 _MaskTextura;
+			float4 _ColorAlbedo;
 			float2 _Tiling;
 			float2 _Speed;
+			float2 _MaskTextura;
 			float2 _MaskAlpha;
+			float _Float0;
+			float _Float1;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -2091,6 +2166,9 @@ Shader "EndRoom"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float2 texCoord11 = v.texcoord.xy * _Tiling + ( _Speed * _TimeParameters.x );
+				float4 temp_output_64_0 = ( _ColorEmissive * tex2Dlod( _tech, float4( texCoord11, 0, 0.0) ) );
+				
 				o.ase_texcoord7.xy = v.texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -2100,7 +2178,7 @@ Shader "EndRoom"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( ( temp_output_64_0 * _Float0 ) * _Float1 ).rgb;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -2283,12 +2361,13 @@ Shader "EndRoom"
 				float smoothstepResult72 = smoothstep( _MaskTextura.x , _MaskTextura.y , texCoord5.y);
 				
 				float2 texCoord11 = IN.ase_texcoord7.xy * _Tiling + ( _Speed * _TimeParameters.x );
+				float4 temp_output_64_0 = ( _ColorEmissive * tex2D( _tech, texCoord11 ) );
 				
 				float smoothstepResult70 = smoothstep( _MaskAlpha.x , _MaskAlpha.y , ( 1.0 - texCoord5.y ));
 				
 				float3 Albedo = ( _ColorAlbedo * smoothstepResult72 ).rgb;
 				float3 Normal = float3(0, 0, 1);
-				float3 Emission = ( ( _ColorEmissive * tex2D( _tech, texCoord11 ) ) * smoothstepResult72 ).rgb;
+				float3 Emission = ( temp_output_64_0 * smoothstepResult72 ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = 0;
 				float Smoothness = 0.5;
@@ -2448,24 +2527,28 @@ Shader "EndRoom"
 }
 /*ASEBEGIN
 Version=18935
-340;73;618;606;1110.811;711.7325;1.571005;False;False
+0;73;1911;479;2374.299;288.1202;1.744024;True;False
 Node;AmplifyShaderEditor.SimpleTimeNode;12;-1646.186,-78.54346;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.Vector2Node;13;-1625.109,-209.8748;Inherit;False;Property;_Speed;Speed;13;0;Create;True;0;0;0;False;0;False;0,0.2;0,0.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.Vector2Node;13;-1625.109,-209.8748;Inherit;False;Property;_Speed;Speed;6;0;Create;True;0;0;0;False;0;False;0,0.2;0,0.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;14;-1451.621,-156.3694;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.Vector2Node;16;-1457.245,-337.1755;Inherit;False;Property;_Tiling;Tiling;12;0;Create;True;0;0;0;False;0;False;1,1;10,10;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.Vector2Node;16;-1457.245,-337.1755;Inherit;False;Property;_Tiling;Tiling;5;0;Create;True;0;0;0;False;0;False;1,1;10,10;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
 Node;AmplifyShaderEditor.TextureCoordinatesNode;11;-1279.757,-198.5251;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.TextureCoordinatesNode;5;-1445.028,56.60707;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.BreakToComponentsNode;6;-1183.554,31.23063;Inherit;True;FLOAT2;1;0;FLOAT2;0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
-Node;AmplifyShaderEditor.ColorNode;77;-1069.345,-433.8898;Inherit;False;Property;_ColorEmissive;ColorEmissive;7;0;Create;True;0;0;0;False;0;False;0.4009434,1,0.4017655,0;0.4009434,1,0.4017655,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SamplerNode;10;-1058.809,-202.9498;Inherit;True;Property;_tech;tech;11;0;Create;True;0;0;0;False;0;False;-1;e18d2e569567ed841937ad5e004f58cd;e18d2e569567ed841937ad5e004f58cd;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.Vector2Node;73;-920.8796,100.5775;Inherit;False;Property;_MaskTextura;MaskTextura;10;0;Create;True;0;0;0;False;0;False;0,0;0.83,1.06;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
-Node;AmplifyShaderEditor.ColorNode;81;-824.6344,-562.3821;Inherit;False;Property;_ColorAlbedo;ColorAlbedo;8;0;Create;True;0;0;0;False;0;False;0.4009434,1,0.4017655,0;0,0.4339623,0.1069614,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;77;-1069.345,-433.8898;Inherit;False;Property;_ColorEmissive;ColorEmissive;0;0;Create;True;0;0;0;False;0;False;0.4009434,1,0.4017655,0;0.4009434,1,0.4017655,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SamplerNode;10;-1058.809,-202.9498;Inherit;True;Property;_tech;tech;4;0;Create;True;0;0;0;False;0;False;-1;e18d2e569567ed841937ad5e004f58cd;e18d2e569567ed841937ad5e004f58cd;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;64;-733.111,-244.6592;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.OneMinusNode;66;-876.0355,341.4841;Inherit;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.Vector2Node;71;-702.8443,497.106;Inherit;False;Property;_MaskAlpha;MaskAlpha;9;0;Create;True;0;0;0;False;0;False;0,0;0,0.05;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.Vector2Node;73;-920.8796,100.5775;Inherit;False;Property;_MaskTextura;MaskTextura;3;0;Create;True;0;0;0;False;0;False;0,0;0.83,1.06;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.BreakToComponentsNode;6;-1183.554,31.23063;Inherit;True;FLOAT2;1;0;FLOAT2;0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
+Node;AmplifyShaderEditor.RangedFloatNode;84;-930.8676,632.8506;Inherit;False;Property;_Float0;Float 0;7;0;Create;True;0;0;0;False;0;False;1;0.009907099;0;0.2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;87;-603.5836,779.9397;Inherit;False;Property;_Float1;Float 0;8;0;Create;True;0;0;0;False;0;False;1;0.03948633;0;0.2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SmoothstepOpNode;72;-727.3378,-11.57785;Inherit;True;3;0;FLOAT;0;False;1;FLOAT;0.77;False;2;FLOAT;0.97;False;1;FLOAT;0
+Node;AmplifyShaderEditor.ColorNode;81;-824.6344,-562.3821;Inherit;False;Property;_ColorAlbedo;ColorAlbedo;1;0;Create;True;0;0;0;False;0;False;0.4009434,1,0.4017655,0;0,0.4339623,0.1069614,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.Vector2Node;71;-711.1474,387.9777;Inherit;False;Property;_MaskAlpha;MaskAlpha;2;0;Create;True;0;0;0;False;0;False;0,0;0,0.05;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;83;-519.9342,481.401;Inherit;True;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.OneMinusNode;66;-884.3386,232.3558;Inherit;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;86;-257.8381,442.8809;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SmoothstepOpNode;70;-518.2562,188.2948;Inherit;True;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0.16;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;15;-451.7731,-105.7476;Inherit;True;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SmoothstepOpNode;70;-509.9531,297.423;Inherit;True;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0.16;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;80;-491.8877,-468.8445;Inherit;True;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;57;-15.37098,-159.4739;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;True;False;False;False;False;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;62;-15.37098,-159.4739;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;5;False;-1;10;False;-1;1;1;False;-1;10;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;2;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
@@ -2474,28 +2557,33 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;59;-15.37098,-159.4739;Floa
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;58;-15.37098,-159.4739;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;True;False;False;False;False;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;55;-15.37098,-159.4739;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;61;-15.37098,-159.4739;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;56;-15.37098,-159.4739;Float;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;EndRoom;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;5;False;-1;10;False;-1;1;1;False;-1;10;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;2;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;0;Surface;1;638069433778097479;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,-1;0;Translucency;0;0;  Translucency Strength;1,False,-1;0;  Normal Distortion;0.5,False,-1;0;  Scattering;2,False,-1;0;  Direct;0.9,False,-1;0;  Ambient;0.1,False,-1;0;  Shadow;0.5,False,-1;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,-1;0;  Type;0;0;  Tess;16,False,-1;0;  Min;10,False,-1;0;  Max;25,False,-1;0;  Edge Length;16,False,-1;0;  Max Displacement;25,False,-1;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;56;-15.37098,-159.4739;Float;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;EndRoom;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;5;False;-1;10;False;-1;1;1;False;-1;10;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;2;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;0;Surface;1;638069433778097479;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,-1;0;Translucency;0;0;  Translucency Strength;1,False,-1;0;  Normal Distortion;0.5,False,-1;0;  Scattering;2,False,-1;0;  Direct;0.9,False,-1;0;  Ambient;0.1,False,-1;0;  Shadow;0.5,False,-1;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;1;638070837835394983;  Phong;0;0;  Strength;0.5,False,-1;0;  Type;0;0;  Tess;16,False,-1;0;  Min;10,False,-1;0;  Max;25,False,-1;0;  Edge Length;16,False,-1;0;  Max Displacement;25,False,-1;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;False;0
 WireConnection;14;0;13;0
 WireConnection;14;1;12;0
 WireConnection;11;0;16;0
 WireConnection;11;1;14;0
-WireConnection;6;0;5;0
 WireConnection;10;1;11;0
 WireConnection;64;0;77;0
 WireConnection;64;1;10;0
-WireConnection;66;0;6;1
+WireConnection;6;0;5;0
 WireConnection;72;0;6;1
 WireConnection;72;1;73;1
 WireConnection;72;2;73;2
-WireConnection;15;0;64;0
-WireConnection;15;1;72;0
+WireConnection;83;0;64;0
+WireConnection;83;1;84;0
+WireConnection;66;0;6;1
+WireConnection;86;0;83;0
+WireConnection;86;1;87;0
 WireConnection;70;0;66;0
 WireConnection;70;1;71;1
 WireConnection;70;2;71;2
+WireConnection;15;0;64;0
+WireConnection;15;1;72;0
 WireConnection;80;0;81;0
 WireConnection;80;1;72;0
 WireConnection;56;0;80;0
 WireConnection;56;2;15;0
 WireConnection;56;6;70;0
+WireConnection;56;8;86;0
 ASEEND*/
-//CHKSM=B04BE8F1CD2203509377D8B98274B539795972A4
+//CHKSM=6B12EBCE2AB49E752A342A8C502D0A1D117AD667
